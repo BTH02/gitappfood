@@ -45,13 +45,13 @@ Padding newest(String image, String name, String name1, int money){
                 },
                 child: Container(
                   alignment: Alignment.center,
-                  child: Image.asset(image,height: 120,width: 150,),
+                  child: Image.asset(image,height: 120,width: 130,),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15),
-                child: SizedBox(
-                  width: 190,
+                child: Container(
+                  width: 130,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -73,19 +73,20 @@ Padding newest(String image, String name, String name1, int money){
                     ],
                   ),
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.favorite_border,color: Colors.red,),
+                    Icon(CupertinoIcons.cart,color: Colors.red,)
+                  ],
+                ),
               )
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Icon(Icons.favorite_border,color: Colors.red,),
-                Icon(CupertinoIcons.cart,color: Colors.red,)
-              ],
-            ),
-          )
+
         ],
       ),
     ),

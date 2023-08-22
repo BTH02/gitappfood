@@ -1,9 +1,14 @@
+import 'package:appfood/Bloc/add_to_cart_bloc.dart';
+import 'package:appfood/Bloc/add_to_cart_state.dart';
 import 'package:appfood/Widgets/appbar_widget.dart';
-import 'package:appfood/Widgets/drawerwidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../Bloc/add_to_cart_event.dart';
 import '../Widgets/cartbottom.dart';
+
+
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
 
@@ -15,136 +20,69 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const AppBarWidget(),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                    child: Text("Order List",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
-                  ),
-                  cart("images/pizza.png", "Hot Pizza", "Taste Our Hot Pizza", 10),
-                  cart("images/burger.png", "Hot Burger", "Taste Our Hot Burger", 10),
-                  cart("images/salan.png", "Hot Salan", "Taste Our Hot Salan", 10),
-                  cart("images/biryani.png", "Hot Biryani", "Taste Our Hot Biryani", 10),
-                  cart("images/drink.png", "Hot Drink", "Taste Our Hot Drink", 5),
-                  Padding(
-                    padding:const EdgeInsets.symmetric(vertical: 30,horizontal: 20),
-                    child:Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [boxshadow()],
-                          color: Colors.white
-                      ),
-                      child: Column(
+
+      appBar: AppBar(
+        title: Text("My Cart"),
+        centerTitle: true,
+      ),
+      body: BlocBuilder<CartBloc, CartState>(
+        builder: (context, state) {
+          if (state.cartItem.isEmpty) {
+            return Center(
+              child: Text("Your cart is empty"),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: state.cartItem.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Padding(
-                            padding:const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Text("Item:",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                Text("10",style: TextStyle(fontSize: 20),),
-                              ],
-                            ),
+                          Row(
+                            children: [
+                              Image.asset(state.cartItem[index].pathImage,height: 50,width: 50,),
+                              Text(state.cartItem[index].name),
+                            ],
                           ),
-                          const Divider(
-                            color: Colors.black,
+                          Text(
+                            "${state.cartItem[index].countitem}",
+                            style: TextStyle(color: Colors.red),
                           ),
-                          payment("Sub-Total:", "\$ 60"),
-                          const Divider(
-                            color: Colors.black,
-                          ),
-                          payment("Delievery:", "\$20"),
-                          const Divider(
-                            color: Colors.black,
-                          ),
-                          payment("Total:", "\$80")
                         ],
                       ),
-                    ) ,
-                  )
-                ],
-              ),
-            ),
-          )
-        ],
+                      subtitle: Text("\$${state.cartItem[index].price}"),
+                      trailing: IconButton(
+                        icon: Icon(Icons.remove_shopping_cart_outlined),
+                        onPressed: () {
+                          final cartBloc = BlocProvider.of<CartBloc>(context);
+                          cartBloc.add(RemoveFromCart(state.cartItem[index]));
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        },
       ),
-      drawer: const DrawerWidget(),
-      bottomNavigationBar: const CartbottomBar(),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          boxShadow: [boxshadow()],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, "/");
+          },
+          backgroundColor: Colors.white,
+          child: const Icon(CupertinoIcons.home,color: Colors.red,),
+        ),
+      ),
+      bottomNavigationBar: CartbottomBar(),
     );
   }
 }
-
-Padding cart(String image,String name, String name1,int money){
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10),
-    child: Container(
-      width: double.infinity,
-      height: 100,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [boxshadow()]
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                alignment: Alignment.center,
-                child: Image.asset(image,width: 150,height: 80,),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(name,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-                  Text(name1,style: const TextStyle(fontSize: 14),),
-                  Text("\$$money",style: const TextStyle(color: Colors.red,fontWeight: FontWeight.bold,fontSize: 20),)
-                ],
-              ),
-            ],
-          ),
-          Padding(
-            padding:const EdgeInsets.symmetric(vertical: 5),
-            child: Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Icon(CupertinoIcons.minus,color: Colors.white,),
-                  Text("2"),
-                  Icon(CupertinoIcons.minus,color: Colors.white,)
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    ),
-  );
-}
-Padding payment(String name, String money){
-  return Padding(
-    padding:const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(name,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-        Text(money,style: const TextStyle(fontSize: 20),),
-      ],
-    ),
-  );
-}
-
