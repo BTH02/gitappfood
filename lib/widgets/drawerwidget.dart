@@ -1,3 +1,4 @@
+import 'package:appfood/routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,16 +23,22 @@ class DrawerWidget extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(CupertinoIcons.home,color: Colors.red,),
-            title: const Text("Home",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+            title: const Text("Trang chủ",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
             onTap: () {
-              Navigator.pushNamed(context, "/");
+              Navigator.pushNamed(context, Routes.home);
             },
           ),
           listTile(CupertinoIcons.person, "My Account"),
           listTile(CupertinoIcons.cart_fill, "My Order"),
           listTile(CupertinoIcons.heart_fill, "My Wish List"),
           listTile(CupertinoIcons.settings, "Settings"),
-          listTile(Icons.exit_to_app, "Log Out"),
+          ListTile(
+            leading: const Icon(Icons.exit_to_app,color: Colors.red,),
+            title: const Text("Đăng xuất",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+            onTap: () {
+              Navigator.pushNamed(context, Routes.login);
+            },
+          ),
         ],
       ),
     );
